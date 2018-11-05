@@ -176,6 +176,7 @@ int main()
     
     int linkCount; // the amount of links between all zones
     cin >> playerCount >> myId >> zoneCount >> linkCount; cin.ignore();
+    cerr <<"zoneCount= " << zoneCount <<" linkCount = " << linkCount << endl; 
     enemyId = 1 - myId;
     Graph g(zoneCount); 
     distFromMyHQ.reserve(zoneCount);
@@ -210,6 +211,7 @@ int main()
     {
         int myPlatinum; // your available Platinum
         cin >> myPlatinum; cin.ignore();
+        cerr << "myPlatinum = " << myPlatinum<<endl;
         for (int i = 0; i < zoneCount; i++)
         {
            T_Zone tz;
@@ -226,6 +228,13 @@ int main()
             tz.enemyPods = (1 == myId) ? tz.podsP0 : tz.podsP1;
 	        zones_map[tz.zId] = tz; //.insert(pair<int,int>(zone1,zone2));
 	       // zones.push_back(tz) ;
+	       
+	       if(tz.platinum > 0 && 0 == vecPlatinum[tz.zId]) 
+	       //update platinuim diterbution with a new zone
+	       {
+	        vecPlatinum[tz.zId] = tz.platinum;
+	        cerr << "****  update new zone with platinuim **" << endl;
+	       }
 	        if(1 == turnNumber)//first turn
 	        {
 	            if(tz.myPods > 0)
