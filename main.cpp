@@ -15,7 +15,7 @@ typedef struct
 {
   int zId;			// this zone's ID
   int ownerId;			// the player who owns this zone (-1 otherwise)
-  int podsP0;			// player 0's PODs on this zone
+  int podsP0;			// player 0's Phttps://www.onlinegdb.com/online_c++_compiler#tab-stdinODs on this zone
   int podsP1;			// player 1's PODs on this zone
   int myPods;
   int enemyPods;
@@ -33,9 +33,10 @@ typedef struct
 typedef enum{
     R_PLATINUM = 1,
     R_INC_ENEMY_ZONE,
+    R_INC_NAT_ZONE,
     R_DFS,
     R_BFS,
-    R_INC_NAT_ZONE,
+    
     R_ENUM_END
 }E_Reson;
 
@@ -47,6 +48,7 @@ multimap< int,int > links;
 map< int,T_Zone > zones_map;
 vector < int > distFromMyHQ;
 vector < int > distFromEnemyHQ;
+vector < int > vecPlatinum ;
 
 int myHQid, enemyHQid;
 int zoneCount; // the amount of zones on the map
@@ -251,6 +253,9 @@ int main()
     Graph g(zoneCount); 
     distFromMyHQ.reserve(zoneCount);
     distFromEnemyHQ.reserve(zoneCount);
+    vecPlatinum.reserve(zoneCount); 
+    for(auto p : vecPlatinum)
+        p = 0;
     for (int i = 0; i < zoneCount; i++) {
         int zoneId; // this zone's ID (between 0 and zoneCount-1)
         int platinumSource; // Because of the fog, will always be 0
@@ -339,7 +344,7 @@ int main()
             cerr <<"zFromId=" << zId<<endl;
             int movesFromThisZone = 0;
             auto zzFrom = zones_map[zId];
-            if (zzFrom.ownerId != myId || zzFrom.myPods == 0 || zzFrom.platinum > 4 && zzFrom.myPods == 1)
+            if (zzFrom.ownerId != myId || zzFrom.myPods == 0 || zzFrom.platinum > 1 && zzFrom.myPods == 1)
             {
                 continue;
             }
@@ -357,7 +362,7 @@ int main()
             }
 
             E_Reson er = R_PLATINUM;
-            bool cond = false;  
+            
 
             
 
@@ -367,12 +372,17 @@ int main()
                 {
                     break;
                 }
+                
                 cerr <<"i_er=" << i_er<<" num neighbors= " << neighbors.size()<<"zzFrom.myPods" <<zzFrom.myPods<< endl;
                 T_Zone zzDest;
-                for(int n = neighbors.size()-1 ; n > -1 && false == cond; n--)
+                for(int n = neighbors.size()-1 ; n > -1  ; n--)
                 {
-                    
-
+                  if( 0 == zzFrom.myPods)
+                    {
+                    break;
+                    }   
+                bool cond = false;  
+                cerr <<"a zzDest=" << zzDest.zId<<endl;
                 er = (E_Reson)i_er;
                 zzDest = neighbors[n];
                 if(true == mapIsPodMoveTo[zzDest.zId])
@@ -380,7 +390,7 @@ int main()
                         continue;
                     }
                 
-                cerr <<"zzDest=" << zzDest.zId<<endl;
+                cerr <<"b zzDest=" << zzDest.zId<<endl;
                 
                 switch(er) 
                     {
